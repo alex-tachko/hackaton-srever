@@ -37,7 +37,11 @@ class DataService {
         return this.data.shareholders; // transform to xls
     }
 
-    updateShareholders() {}
+    updateShareholders(parsedHeaders) {
+       return {
+           headersMatch: parsedHeaders?.filter(header => this.data?.headers(header)) 
+       }
+    }
 
     getPreview(parsedFile) {
         return {
@@ -85,12 +89,11 @@ router.post('/calculate-preview', (req, res, next) => {
             }
         });
 
-        const preview = {
+            const preview = {
             existingHeaders: dataService.getHeaders(),
             parsedTable: parsedData,
             parsedHeaders,
         };
-
         res.status(200).send(preview);
     });
 });
@@ -110,6 +113,7 @@ router.post('/calculate-preview', (req, res, next) => {
 router.post('/update-table', (req, res, next) => {
     dataService.updateShareholders();
     res.status(200).send(dataService.getShareholders());
+    
 });
 
 module.exports = router;
