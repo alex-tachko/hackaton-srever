@@ -15,11 +15,6 @@ router.use('*', (req, res, next) => {
     next();
 });
 
-const existingData = {
-    headers: ['User', 'Email'], // keys of shareholder object values
-    shareholders: [{ id: 1, User: 'Mikky', Email: 'mikky@wevestr.com' }],
-};
-
 class DataService {
     data = {
         headers: ['User', 'Email'], // keys of shareholder object values
@@ -31,7 +26,7 @@ class DataService {
     }
 
     getShareholders() {
-        return this.data.shareholders; // possibly format?
+        return this.data.shareholders;
     }
 
     getHeaders() {
@@ -59,7 +54,10 @@ router.get('/shareholders/:id', (req, res, next) => {
 });
 
 router.get('/shareholders', (req, res, next) => {
-    res.status(200).send(dataService.getShareholders());
+    res.status(200).send({
+        shareholders: dataService.getShareholders(),
+        headers: dataService.getHeaders(),
+    });
 });
 
 router.get('/shareholders-xls', (req, res, next) => {
@@ -97,6 +95,18 @@ router.post('/calculate-preview', (req, res, next) => {
     });
 });
 
+// expected body
+// {
+//     matching: {
+//         newHeader1: oldHeader3,
+//         newHeader2: oldHeader1,
+//         newHeader3: undefined,
+//         newHeader4: undefined,
+//     },
+//     parsedTable: [{ newHeader1: value1, newHeader2: value2,...},...]
+// }
+//
+// data.headers: [oldHeader1, oldHeader2, oldHeader3] => [oldHeader1, oldHeader2, oldHeader3, newHeader3, newHeader4]
 router.post('/update-table', (req, res, next) => {
     dataService.updateShareholders();
     res.status(200).send(dataService.getShareholders());
