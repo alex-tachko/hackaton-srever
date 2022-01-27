@@ -11,8 +11,26 @@ router.use('*', (req, res, next) => {
     next();
 });
 
-router.get('/get', (req, res, next) => {
-    res.status(200).send('table');
+const existingData = {
+    headers: ['User', 'Email'],
+    table: [
+        ['User', 'Mikky'],
+        ['Email', 'mikky@wevestr.com'],
+    ],
+};
+
+router.get('/users', (req, res, next) => {
+    res.status(200).send(existingData.table);
+});
+
+router.post('/calculate-preview', (req, res, next) => {
+    res.status(200).send({
+        existingHeaders: existingData.headers, // TODO To be changed
+        parsedTable: [
+            ['Name', 'Alex', 'Gleb'],
+            ['e-mail address', 'alex@wevestr.com', 'gleb@wevestr.com'],
+        ], // TODO To be changed
+    });
 });
 
 module.exports = router;
